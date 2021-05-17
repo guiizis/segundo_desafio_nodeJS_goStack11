@@ -1,10 +1,10 @@
 import request from 'supertest';
 import { validate as isUuid } from 'uuid';
-import app from '../app';
+import server from '../server';
 
 describe('Transaction', () => {
   it('should be able to create a new transaction', async () => {
-    const response = await request(app).post('/transactions').send({
+    const response = await request(server).post('/transactions').send({
       title: 'Loan',
       type: 'income',
       value: 1200,
@@ -20,19 +20,19 @@ describe('Transaction', () => {
   });
 
   it('should be able to list the transactions', async () => {
-    await request(app).post('/transactions').send({
+    await request(server).post('/transactions').send({
       title: 'Salary',
       type: 'income',
       value: 3000,
     });
 
-    await request(app).post('/transactions').send({
+    await request(server).post('/transactions').send({
       title: 'Bicycle',
       type: 'outcome',
       value: 1500,
     });
 
-    const response = await request(app).get('/transactions');
+    const response = await request(server).get('/transactions');
 
     expect(response.body.transactions).toEqual(
       expect.arrayContaining([
@@ -65,7 +65,7 @@ describe('Transaction', () => {
   });
 
   it('should not be able to create outcome transaction without a valid balance', async () => {
-    const response = await request(app).post('/transactions').send({
+    const response = await request(server).post('/transactions').send({
       title: 'Bicycle',
       type: 'outcome',
       value: 3000,
